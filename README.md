@@ -23,16 +23,19 @@ This project covers concepts about:
 - GIT Bash
 - GitHub(Repos, Actions)
 
-## How to clone this project
+## How to use it
 
 ```Powershell
-cd\
-mkdir repo
-cd repo
-git clone https://github.com/diegodocs/SimpleIocContainer.git
+var container = new SimpleIocContainer.SimpleContainer();
+
+container.Register<IFileHandler, MockFileHandler>();
+container.Register<IApplicationService, MockApplicationService>();
+
+var mockService = container.Resolve<IApplicationService>();
+var fileHandler = container.Resolve<IFileHandler>();
 ```
 
-### Restore, Build and Test
+## Restore, Build and Test
 
 ```Powershell
 dotnet restore

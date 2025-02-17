@@ -1,4 +1,4 @@
-﻿namespace SimpleIocContainer
+﻿namespace SimpleIoCContainer.Exceptions
 {
     public class InstanceCreationErrorException : Exception
     {

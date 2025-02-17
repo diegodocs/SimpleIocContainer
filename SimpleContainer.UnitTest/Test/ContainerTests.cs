@@ -1,10 +1,11 @@
-﻿using SimpleIocContainer;
-using SimpleIocContainer.UnitTest.Mock;
+﻿using SimpleIocContainer.UnitTest.Mock;
+using SimpleIoCContainer.Contracts;
+using SimpleIoCContainer.Exceptions;
 using Xunit;
 
 namespace SimpleContainer.UnitTest.Test
 {
-    public class ContainerUnitTest
+    public class ContainerTests
     {
         [Fact]
         public void WhenContainerIsEmpty_Then_ResolveTypeRaiseError()
@@ -19,7 +20,7 @@ namespace SimpleContainer.UnitTest.Test
 
             //assert
             Assert.Equal(expectedMessage, ex.Message);
-            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count);
         }
 
         [Fact]
@@ -36,7 +37,7 @@ namespace SimpleContainer.UnitTest.Test
             
             //assert
             Assert.Equal(expectedType, resolvedType.GetType());
-            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count);
         }
 
         [Fact]
@@ -52,7 +53,7 @@ namespace SimpleContainer.UnitTest.Test
             var ex = Assert.Throws<TypeNotRegisteredException>(() => container.Resolve<IApplicationService>());
             //assert
             Assert.Equal(expectedMessage, ex.Message);
-            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count);
         }
 
         [Fact]
@@ -72,7 +73,7 @@ namespace SimpleContainer.UnitTest.Test
             //assert
             Assert.Equal(expectedType, mockService.GetType());
             Assert.Equal(typeof(MockFileHandler), fileHandler.GetType());
-            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count);
         }
 
         [Fact]
@@ -88,7 +89,7 @@ namespace SimpleContainer.UnitTest.Test
             var resolvedType = container.Resolve<IFileHandler>();
             //assert
             Assert.Equal(expectedType, resolvedType.GetType());
-            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count);
         }
 
         [Fact]
@@ -107,7 +108,7 @@ namespace SimpleContainer.UnitTest.Test
             Assert.Equal(expectedType, resolvedType.GetType());
             Assert.Equal(expectedType, resolvedType2.GetType());
             Assert.Equal(resolvedType, resolvedType2);
-            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count);
         }
 
         [Fact]
@@ -118,13 +119,13 @@ namespace SimpleContainer.UnitTest.Test
             var expectedCount = 1;
             var container = new SimpleIocContainer.SimpleContainer();
             //act
-            container.Register<IFileHandler, MockFileHandler>(LifeCycleEnum.Transient);
+            container.Register<IFileHandler, MockFileHandler>(ObjectLifeCycle.Transient);
             var resolvedType = container.Resolve<IFileHandler>();
             var resolvedType2 = container.Resolve<IFileHandler>();
             //assert
             Assert.Equal(expectedType, resolvedType.GetType());
             Assert.Equal(expectedType, resolvedType2.GetType());
-            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count);
         }
 
         [Fact]
@@ -135,14 +136,15 @@ namespace SimpleContainer.UnitTest.Test
             var expectedCount = 1;
             var container = new SimpleIocContainer.SimpleContainer();
             //act
-            container.Register<IFileHandler, MockFileHandler>(LifeCycleEnum.Transient);
+            container.Register<IFileHandler, MockFileHandler>(ObjectLifeCycle.Transient);
             var resolvedType = container.Resolve<IFileHandler>();
             var resolvedType2 = container.Resolve<IFileHandler>();
             //assert
             Assert.Equal(expectedType, resolvedType.GetType());
             Assert.Equal(expectedType, resolvedType2.GetType());
             Assert.NotEqual(resolvedType, resolvedType2);
-            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
+            
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count);
         }
 
         [Fact]
@@ -153,16 +155,14 @@ namespace SimpleContainer.UnitTest.Test
             var expectedCount = 1;
             var container = new SimpleIocContainer.SimpleContainer();
             //act
-            container.Register<IFileHandler, MockFileHandler>(LifeCycleEnum.Singleton);
+            container.Register<IFileHandler, MockFileHandler>(ObjectLifeCycle.Singleton);
             var resolvedType = container.Resolve<IFileHandler>();
             var resolvedType2 = container.Resolve<IFileHandler>();
             //assert
             Assert.Equal(expectedType, resolvedType.GetType());
             Assert.Equal(expectedType, resolvedType2.GetType());
             Assert.Equal(resolvedType, resolvedType2);
-            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
-        }
-
-
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count);
+        }       
     }
 }

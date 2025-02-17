@@ -1,4 +1,7 @@
-﻿namespace SimpleIocContainer
+﻿using SimpleIoCContainer.Contracts;
+using SimpleIoCContainer.Exceptions;
+
+namespace SimpleIocContainer
 {
     public class SimpleContainer : IContainer
     {
@@ -32,10 +35,10 @@
 
         public void Register<TContractType, TImplementationType>()
         {
-            Register<TContractType, TImplementationType>(LifeCycleEnum.Transient);
+            Register<TContractType, TImplementationType>(ObjectLifeCycle.Transient);
         }
 
-        public void Register<TContractType, TImplementationType>(LifeCycleEnum lifeCycle)
+        public void Register<TContractType, TImplementationType>(ObjectLifeCycle lifeCycle)
         {
             var registeredObject = new RegisteredObject(
                 contractType: typeof(TContractType),
@@ -51,7 +54,7 @@
                 contractType: typeof(TContractType),
                 implementationType: typeof(TContractType),
                 instance: instance,
-                lifeCycle: LifeCycleEnum.Singleton);
+                lifeCycle: ObjectLifeCycle.Singleton);
 
             RegisteredObjects.Add(registeredObject);
         }
@@ -61,7 +64,7 @@
             var registeredObject = RegisteredObjects.FirstOrDefault(o => o.ContractType == ContractType) ??
                 throw new TypeNotRegisteredException($"The type {ContractType.Name} has not been registered.");
 
-            if (registeredObject.Instance == null || registeredObject.LifeCycle == LifeCycleEnum.Transient)
+            if (registeredObject.Instance == null || registeredObject.LifeCycle == ObjectLifeCycle.Transient)
             {
                 var parameters = ResolveConstructorParameters(registeredObject);
                 registeredObject.GetInstance(parameters);
