@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace SimpleIocContainer
+﻿namespace SimpleIocContainer
 {
 
-    public class RegisteredObject
+    public class RegisteredObject(Type contractType, Type implementationType, object? instance = null, LifeCycleEnum lifeCycle = LifeCycleEnum.Transient)
     {
-        public Type ConcreteType { get; internal set; }
-        public object Instance { get; internal set; }
-        public LifeCycleEnum LifeCycle { get; internal set; }
-        public Type TypeToResolve { get; internal set; }
+        public Guid Id { get; protected set; } = Guid.NewGuid();
+        public Type ImplementationType { get; protected set; } = implementationType;
+        public object? Instance { get; protected set; } = instance;
+        public LifeCycleEnum LifeCycle { get; protected set; } = lifeCycle;
+        public Type ContractType { get; protected set; } = contractType;
         public void GetInstance(IEnumerable<object> parameters)
         {
-            Instance = Activator.CreateInstance(ConcreteType, parameters.ToArray());
+            Instance = Activator.CreateInstance(type: ImplementationType, [.. parameters]);
         }
     }
 }

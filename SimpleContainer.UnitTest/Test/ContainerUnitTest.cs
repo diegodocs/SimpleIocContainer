@@ -1,94 +1,168 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SimpleIocContainer;
-using System.Linq;
+﻿using SimpleIocContainer;
 using SimpleIocContainer.UnitTest.Mock;
+using Xunit;
 
 namespace SimpleContainer.UnitTest.Test
 {
-    [TestClass]
     public class ContainerUnitTest
     {
-        [TestMethod]
-        public void WhenRegisteredObjectEmpty_Then_ResolveTypeRaiseError()
+        [Fact]
+        public void WhenContainerIsEmpty_Then_ResolveTypeRaiseError()
         {
             //arrange
             var expectedCount = 0;
             var expectedMessage = "The type IFileHandler has not been registered.";
-            var currentMessage = "";
-            var container = new SimpleContainerIoc();
-            //act
-            try
-            {
-                var resolvedType = container.Resolve<IFileHandler>();
-            }
-            catch (Exception ex)
-            {
-                currentMessage = ex.Message;                
-            }
+            
+            var container = new SimpleIocContainer.SimpleContainer();
+            //act            
+            var ex = Assert.Throws<TypeNotRegisteredException>(()=>container.Resolve<IFileHandler>());
 
             //assert
-            Assert.AreEqual(expectedMessage, currentMessage);
-            Assert.AreEqual(expectedCount, container.RegisteredObjects.Count());
+            Assert.Equal(expectedMessage, ex.Message);
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenRegisteredOneType_Then_ResolveType()
         {
             //arrange
             var expectedType = typeof(MockFileHandler);
             var expectedCount = 1;            
             
-            var container = new SimpleContainerIoc();
+            var container = new SimpleIocContainer.SimpleContainer();
             //act
             container.Register<IFileHandler, MockFileHandler>();
             var resolvedType = container.Resolve<IFileHandler>();
             
             //assert
-            Assert.AreEqual(expectedType, resolvedType.GetType());
-            Assert.AreEqual(expectedCount, container.RegisteredObjects.Count());
+            Assert.Equal(expectedType, resolvedType.GetType());
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenDependencyTypeNotRegistered_Then_ResolveTypeRaiseError()
         {
             //arrange
             var expectedCount = 1;
             var expectedMessage = "The type IFileHandler has not been registered.";
-            var currentMessage = "";
-            var container = new SimpleContainerIoc();
+            
+            var container = new SimpleIocContainer.SimpleContainer();
             //act
             container.Register<IApplicationService, MockApplicationService>();
-            try
-            {
-                var resolvedType = container.Resolve<IApplicationService>();
-            }
-            catch (Exception ex)
-            {
-                currentMessage = ex.Message;
-            }
-
+            var ex = Assert.Throws<TypeNotRegisteredException>(() => container.Resolve<IApplicationService>());
             //assert
-            Assert.AreEqual(expectedMessage, currentMessage);
-            Assert.AreEqual(expectedCount, container.RegisteredObjects.Count());
+            Assert.Equal(expectedMessage, ex.Message);
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenDependencyTypeRegistered_Then_ResolveType()
         {
             //arrange
             var expectedType = typeof(MockApplicationService);
             var expectedCount = 2;
 
-            var container = new SimpleContainerIoc();
+            var container = new SimpleIocContainer.SimpleContainer();
             //act
             container.Register<IFileHandler, MockFileHandler>();
             container.Register<IApplicationService, MockApplicationService>();
-            var resolvedType = container.Resolve<IApplicationService>();
+            var mockService = container.Resolve<IApplicationService>();
+            var fileHandler = container.Resolve<IFileHandler>();
 
             //assert
-            Assert.AreEqual(expectedType, resolvedType.GetType());
-            Assert.AreEqual(expectedCount, container.RegisteredObjects.Count());
+            Assert.Equal(expectedType, mockService.GetType());
+            Assert.Equal(typeof(MockFileHandler), fileHandler.GetType());
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
         }
+
+        [Fact]
+        public void WhenRegisterInstance_Then_ResolveType()
+        {
+            //arrange
+            var expectedType = typeof(MockFileHandler);
+            var expectedCount = 1;
+            var container = new SimpleIocContainer.SimpleContainer();
+            //act
+            var mockFileHandler = new MockFileHandler();
+            container.RegisterInstance<IFileHandler>(mockFileHandler);
+            var resolvedType = container.Resolve<IFileHandler>();
+            //assert
+            Assert.Equal(expectedType, resolvedType.GetType());
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
+        }
+
+        [Fact]
+        public void WhenRegisterInstance_Then_ResolveTypeSingleton()
+        {
+            //arrange
+            var expectedType = typeof(MockFileHandler);
+            var expectedCount = 1;
+            var container = new SimpleIocContainer.SimpleContainer();
+            //act
+            var mockFileHandler = new MockFileHandler();
+            container.RegisterInstance<IFileHandler>(mockFileHandler);
+            var resolvedType = container.Resolve<IFileHandler>();
+            var resolvedType2 = container.Resolve<IFileHandler>();
+            //assert
+            Assert.Equal(expectedType, resolvedType.GetType());
+            Assert.Equal(expectedType, resolvedType2.GetType());
+            Assert.Equal(resolvedType, resolvedType2);
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
+        }
+
+        [Fact]
+        public void WhenRegisterTransient_Then_ResolveTypeTransient()
+        {
+            //arrange
+            var expectedType = typeof(MockFileHandler);
+            var expectedCount = 1;
+            var container = new SimpleIocContainer.SimpleContainer();
+            //act
+            container.Register<IFileHandler, MockFileHandler>(LifeCycleEnum.Transient);
+            var resolvedType = container.Resolve<IFileHandler>();
+            var resolvedType2 = container.Resolve<IFileHandler>();
+            //assert
+            Assert.Equal(expectedType, resolvedType.GetType());
+            Assert.Equal(expectedType, resolvedType2.GetType());
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
+        }
+
+        [Fact]
+        public void WhenRegisterTransient_Then_ResolveTypeTransientDifferentInstances()
+        {
+            //arrange
+            var expectedType = typeof(MockFileHandler);
+            var expectedCount = 1;
+            var container = new SimpleIocContainer.SimpleContainer();
+            //act
+            container.Register<IFileHandler, MockFileHandler>(LifeCycleEnum.Transient);
+            var resolvedType = container.Resolve<IFileHandler>();
+            var resolvedType2 = container.Resolve<IFileHandler>();
+            //assert
+            Assert.Equal(expectedType, resolvedType.GetType());
+            Assert.Equal(expectedType, resolvedType2.GetType());
+            Assert.NotEqual(resolvedType, resolvedType2);
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
+        }
+
+        [Fact]
+        public void WhenRegisterSingleton_Then_ResolveTypeSingleton()
+        {
+            //arrange
+            var expectedType = typeof(MockFileHandler);
+            var expectedCount = 1;
+            var container = new SimpleIocContainer.SimpleContainer();
+            //act
+            container.Register<IFileHandler, MockFileHandler>(LifeCycleEnum.Singleton);
+            var resolvedType = container.Resolve<IFileHandler>();
+            var resolvedType2 = container.Resolve<IFileHandler>();
+            //assert
+            Assert.Equal(expectedType, resolvedType.GetType());
+            Assert.Equal(expectedType, resolvedType2.GetType());
+            Assert.Equal(resolvedType, resolvedType2);
+            Assert.Equal(expectedCount, container.RegisteredObjects.Count());
+        }
+
+
     }
 }

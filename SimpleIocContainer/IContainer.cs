@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SimpleIocContainer
+﻿namespace SimpleIocContainer
 {
     public interface IContainer : IDisposable
     {
-        void Register<TTypeContract, TTypeImplementation>();
-        void Register<TTypeContract, TTypeImplementation>(LifeCycleEnum lifeCycle);
-        void RegisterInstance<TTypeContract>(object instance);
-        object Resolve(Type typeToResolve);
-        TTypeContract Resolve<TTypeContract>();
-        IEnumerable<RegisteredObject> RegisteredObjects { get; }
+        void Register<TContractType, TImplementationType>(LifeCycleEnum lifeCycle);
+        void RegisterInstance<TContractType>(object instance);
+        TContractType Resolve<TContractType>();
+        IList<RegisteredObject> RegisteredObjects { get; }
     }
 }
