@@ -1,4 +1,4 @@
-# Simple IoC Container - .NET9 
+# Simple Injection Container - .NET9 
 
 This is a community asset to accelerate understanding and development Inversion of Control Pattern (IoC) principle.
 
