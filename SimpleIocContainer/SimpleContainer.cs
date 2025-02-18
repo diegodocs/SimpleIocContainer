@@ -3,9 +3,11 @@ using SimpleIoCContainer.Exceptions;
 
 namespace SimpleIocContainer
 {
-    public class SimpleContainer : IContainer
+    public class SimpleContainer(IList<RegisteredObject> registeredObjects) : IContainer
     {
-        public IList<RegisteredObject> RegisteredObjects { get; internal set; } = [];
+        private readonly IList<RegisteredObject> registeredObjects = registeredObjects;
+
+        public int RegisteredObjectsCount { get { return registeredObjects.Count; } }
 
         public void Dispose()
         {
@@ -16,10 +18,10 @@ namespace SimpleIocContainer
         protected virtual void Dispose(bool disposing)
         {
             // Cleanup
-            this.RegisteredObjects.Clear();
+            this.registeredObjects.Clear();
         }
 
-        private List<object> ResolveConstructorParameters(RegisteredObject registeredObject)
+        protected List<object> ResolveConstructorParameters(RegisteredObject registeredObject)
         {
             var resolvedParameters = new List<object>();
             var constructorInfo = registeredObject.ImplementationType.GetConstructors()[0];
@@ -32,39 +34,12 @@ namespace SimpleIocContainer
 
             return resolvedParameters;
         }
-
-        public void Register<TContractType, TImplementationType>()
+        private object Resolve(Type ContractType)
         {
-            Register<TContractType, TImplementationType>(ObjectLifeCycle.Transient);
-        }
-
-        public void Register<TContractType, TImplementationType>(ObjectLifeCycle lifeCycle)
-        {
-            var registeredObject = new RegisteredObject(
-                contractType: typeof(TContractType),
-                implementationType: typeof(TImplementationType),
-                lifeCycle: lifeCycle);
-
-            RegisteredObjects.Add(registeredObject);
-        }
-
-        public void RegisterInstance<TContractType>(object instance)
-        {
-            var registeredObject = new RegisteredObject(
-                contractType: typeof(TContractType),
-                implementationType: typeof(TContractType),
-                instance: instance,
-                lifeCycle: ObjectLifeCycle.Singleton);
-
-            RegisteredObjects.Add(registeredObject);
-        }
-
-        public object Resolve(Type ContractType)
-        {
-            var registeredObject = RegisteredObjects.FirstOrDefault(o => o.ContractType == ContractType) ??
+            var registeredObject = registeredObjects.FirstOrDefault(o => o.ContractType == ContractType) ??
                 throw new TypeNotRegisteredException($"The type {ContractType.Name} has not been registered.");
 
-            if (registeredObject.Instance == null || registeredObject.LifeCycle == ObjectLifeCycle.Transient)
+            if (registeredObject.Instance == null || registeredObject.LifeCycle == LifeCycleScope.Transient)
             {
                 var parameters = ResolveConstructorParameters(registeredObject);
                 registeredObject.GetInstance(parameters);
@@ -78,7 +53,6 @@ namespace SimpleIocContainer
 
             return registeredObject.Instance;
         }
-
         public TContractType Resolve<TContractType>()
         {
             return (TContractType)Resolve(typeof(TContractType));

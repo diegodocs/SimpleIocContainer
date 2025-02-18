@@ -1,7 +1,6 @@
 ﻿namespace SimpleIoCContainer.Contracts
 {
-
-    public enum ObjectLifeCycle
+    public enum LifeCycleScope
     {
         Singleton = 1,
         Transient = 2
