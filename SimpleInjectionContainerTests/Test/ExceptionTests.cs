@@ -2,7 +2,6 @@
 using SimpleInjectionContainer.Contracts;
 using SimpleInjectionContainer.Exceptions;
 using SimpleInjectionContainerTests.Mock;
-using System.ComponentModel;
 using Xunit;
 
 namespace SimpleInjectionContainerTests.Test
@@ -21,7 +20,7 @@ namespace SimpleInjectionContainerTests.Test
             var ex = Assert.Throws<TypeNotRegisteredException>(() => container.Resolve<IFileHandler>());            
             //assert
             Assert.Equal(expectedMessage, ex.Message);
-            Assert.Equal(expectedCount, container.typesRegisteredCount);
+            Assert.Equal(expectedCount, container.TypesRegisteredCount);
         }
 
         [Fact]
@@ -38,7 +37,7 @@ namespace SimpleInjectionContainerTests.Test
             var ex = Assert.Throws<TypeNotRegisteredException>(() => container.Resolve<IApplicationService>());
             //assert
             Assert.Equal(expectedMessage, ex.Message);
-            Assert.Equal(expectedCount, container.typesRegisteredCount);
+            Assert.Equal(expectedCount, container.TypesRegisteredCount);
         }
 
         [Fact]

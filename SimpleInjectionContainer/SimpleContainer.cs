@@ -7,7 +7,7 @@ namespace SimpleInjectionContainer
     {
         private readonly IList<TypeRegistered> typesRegistered = typesRegistered;
 
-        public int typesRegisteredCount { get { return typesRegistered.Count; } }
+        public int TypesRegisteredCount { get { return typesRegistered.Count; } }
 
         public void Dispose()
         {

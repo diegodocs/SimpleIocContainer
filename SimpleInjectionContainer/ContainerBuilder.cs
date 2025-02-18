@@ -1,12 +1,11 @@
-﻿
-using SimpleInjectionContainer.Contracts;
+﻿using SimpleInjectionContainer.Contracts;
 
 namespace SimpleInjectionContainer
 {
     public class ContainerBuilder : IContainerBuilder
     {
         protected readonly IList<TypeRegistered> typesRegistered = [];
-        public int typesRegisteredCount { get { return typesRegistered.Count; } }
+        public int TypesRegisteredCount { get { return typesRegistered.Count; } }
 
         public void Dispose()
         {
@@ -39,13 +38,19 @@ namespace SimpleInjectionContainer
             typesRegistered.Add(typeRegistered);
         }
 
-        public void RegisterInstance<TContractType>(object instance)
+        public void Register<TContractType>(object instance)
         {
             var typeRegistered = new TypeRegistered(
-                contractType: typeof(TContractType),
-                implementationType: typeof(TContractType),
-                instance: instance,
-                lifeCycle: LifeCycleScope.Singleton);
+                contractType: typeof(TContractType),                
+                instance: instance);
+
+            typesRegistered.Add(typeRegistered);
+        }
+
+        public void Register(object instance)
+        {
+            var typeRegistered = new TypeRegistered(                
+                instance: instance);
 
             typesRegistered.Add(typeRegistered);
         }

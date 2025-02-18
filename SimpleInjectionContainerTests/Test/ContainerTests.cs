@@ -1,6 +1,5 @@
 ﻿using SimpleInjectionContainer;
 using SimpleInjectionContainer.Contracts;
-using SimpleInjectionContainer.Exceptions;
 using SimpleInjectionContainerTests.Mock;
 using Xunit;
 
@@ -24,7 +23,7 @@ namespace SimpleInjectionContainerTests.Test
 
             //assert
             Assert.Equal(expectedType, resolvedType.GetType());
-            Assert.Equal(expectedCount, container.typesRegisteredCount);
+            Assert.Equal(expectedCount, container.TypesRegisteredCount);
         }
 
         [Fact]
@@ -44,7 +43,24 @@ namespace SimpleInjectionContainerTests.Test
             //assert
             Assert.Equal(expectedType, mockService.GetType());
             Assert.Equal(typeof(MockFileHandler), fileHandler.GetType());
-            Assert.Equal(expectedCount, container.typesRegisteredCount);
+            Assert.Equal(expectedCount, container.TypesRegisteredCount);
+        }
+
+        [Fact]
+        public void WhenRegisterInstance_Then_ResolveContractType()
+        {
+            //arrange
+            var expectedType = typeof(MockFileHandler);
+            var expectedCount = 1;
+            var builder = new ContainerBuilder();
+            var mockFileHandler = new MockFileHandler();
+            builder.Register<IFileHandler>(mockFileHandler);
+            var container = builder.Build();
+            //act            
+            var resolvedType = container.Resolve<IFileHandler>();
+            //assert
+            Assert.Equal(expectedType, resolvedType.GetType());
+            Assert.Equal(expectedCount, container.TypesRegisteredCount);
         }
 
         [Fact]
@@ -55,13 +71,13 @@ namespace SimpleInjectionContainerTests.Test
             var expectedCount = 1;
             var builder = new ContainerBuilder();
             var mockFileHandler = new MockFileHandler();
-            builder.RegisterInstance<IFileHandler>(mockFileHandler);
+            builder.Register(mockFileHandler);
             var container = builder.Build();
             //act            
-            var resolvedType = container.Resolve<IFileHandler>();
+            var resolvedType = container.Resolve<MockFileHandler>();
             //assert
             Assert.Equal(expectedType, resolvedType.GetType());
-            Assert.Equal(expectedCount, container.typesRegisteredCount);
+            Assert.Equal(expectedCount, container.TypesRegisteredCount);
         }
 
         [Fact]
@@ -72,7 +88,7 @@ namespace SimpleInjectionContainerTests.Test
             var expectedCount = 1;
             var builder = new ContainerBuilder();
             var mockFileHandler = new MockFileHandler();
-            builder.RegisterInstance<IFileHandler>(mockFileHandler);
+            builder.Register<IFileHandler>(mockFileHandler);
             var container = builder.Build();
             //act            
             var resolvedType = container.Resolve<IFileHandler>();
@@ -81,7 +97,7 @@ namespace SimpleInjectionContainerTests.Test
             Assert.Equal(expectedType, resolvedType.GetType());
             Assert.Equal(expectedType, resolvedType2.GetType());
             Assert.Equal(resolvedType, resolvedType2);
-            Assert.Equal(expectedCount, container.typesRegisteredCount);
+            Assert.Equal(expectedCount, container.TypesRegisteredCount);
         }
 
         [Fact]
@@ -99,7 +115,7 @@ namespace SimpleInjectionContainerTests.Test
             //assert
             Assert.Equal(expectedType, resolvedType.GetType());
             Assert.Equal(expectedType, resolvedType2.GetType());
-            Assert.Equal(expectedCount, container.typesRegisteredCount);
+            Assert.Equal(expectedCount, container.TypesRegisteredCount);
         }
 
         [Fact]
@@ -119,7 +135,7 @@ namespace SimpleInjectionContainerTests.Test
             Assert.Equal(expectedType, resolvedType2.GetType());
             Assert.NotEqual(resolvedType, resolvedType2);
 
-            Assert.Equal(expectedCount, container.typesRegisteredCount);
+            Assert.Equal(expectedCount, container.TypesRegisteredCount);
         }
 
         [Fact]
@@ -139,7 +155,7 @@ namespace SimpleInjectionContainerTests.Test
             Assert.Equal(expectedType, resolvedType.GetType());
             Assert.Equal(expectedType, resolvedType2.GetType());
             Assert.Equal(resolvedType, resolvedType2);
-            Assert.Equal(expectedCount, container.typesRegisteredCount);
+            Assert.Equal(expectedCount, container.TypesRegisteredCount);
         }
 
         [Fact]
@@ -147,14 +163,16 @@ namespace SimpleInjectionContainerTests.Test
         {
             //arrange            
             var expectedCount = 0;
-            var builder = new ContainerBuilder();            
+            var builder = new ContainerBuilder();
             var container = builder.Build();
+            builder.Register<MockFileHandler>();
+            builder.Register<MockApplicationService>();
             //act
             builder.Dispose();
             container.Dispose();
             //assert
-            Assert.Equal(expectedCount, builder.typesRegisteredCount);
-            Assert.Equal(expectedCount, container.typesRegisteredCount);
+            Assert.Equal(expectedCount, builder.TypesRegisteredCount);
+            Assert.Equal(expectedCount, container.TypesRegisteredCount);
         }
     }
 }

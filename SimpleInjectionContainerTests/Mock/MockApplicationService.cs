@@ -1,12 +1,8 @@
 ﻿namespace SimpleInjectionContainerTests.Mock
 {
-    public class MockApplicationService : IApplicationService
+    public class MockApplicationService(IFileHandler fileHandler) : IApplicationService
     {
-        protected IFileHandler fileHandler;
-        public MockApplicationService(IFileHandler fileHandler)
-        {
-            this.fileHandler = fileHandler;
-        }
+        protected IFileHandler fileHandler = fileHandler;
 
         public void SaveUserLogToFile(string login)
         {
