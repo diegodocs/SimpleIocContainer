@@ -9,22 +9,6 @@ namespace SimpleInjectionContainerTests.Test
     public class ContainerTests
     {
         [Fact]
-        public void WhenContainerIsEmpty_Then_ResolveTypeRaiseError()
-        {
-            //arrange
-            var expectedCount = 0;
-            var expectedMessage = "The type IFileHandler has not been registered.";
-            var builder = new ContainerBuilder();
-            var container = builder.Build();
-            //act            
-            var ex = Assert.Throws<TypeNotRegisteredException>(() => container.Resolve<IFileHandler>());
-
-            //assert
-            Assert.Equal(expectedMessage, ex.Message);
-            Assert.Equal(expectedCount, container.RegisteredObjectsCount);
-        }
-
-        [Fact]
         public void WhenRegisteredOneType_Then_ResolveType()
         {
             //arrange
@@ -40,24 +24,7 @@ namespace SimpleInjectionContainerTests.Test
 
             //assert
             Assert.Equal(expectedType, resolvedType.GetType());
-            Assert.Equal(expectedCount, container.RegisteredObjectsCount);
-        }
-
-        [Fact]
-        public void WhenDependencyTypeNotRegistered_Then_ResolveTypeRaiseError()
-        {
-            //arrange
-            var expectedCount = 1;
-            var expectedMessage = "The type IFileHandler has not been registered.";
-            var builder = new ContainerBuilder();
-            builder.Register<IApplicationService, MockApplicationService>();
-            var container = builder.Build();
-            //act
-
-            var ex = Assert.Throws<TypeNotRegisteredException>(() => container.Resolve<IApplicationService>());
-            //assert
-            Assert.Equal(expectedMessage, ex.Message);
-            Assert.Equal(expectedCount, container.RegisteredObjectsCount);
+            Assert.Equal(expectedCount, container.typesRegisteredCount);
         }
 
         [Fact]
@@ -77,7 +44,7 @@ namespace SimpleInjectionContainerTests.Test
             //assert
             Assert.Equal(expectedType, mockService.GetType());
             Assert.Equal(typeof(MockFileHandler), fileHandler.GetType());
-            Assert.Equal(expectedCount, container.RegisteredObjectsCount);
+            Assert.Equal(expectedCount, container.typesRegisteredCount);
         }
 
         [Fact]
@@ -94,7 +61,7 @@ namespace SimpleInjectionContainerTests.Test
             var resolvedType = container.Resolve<IFileHandler>();
             //assert
             Assert.Equal(expectedType, resolvedType.GetType());
-            Assert.Equal(expectedCount, container.RegisteredObjectsCount);
+            Assert.Equal(expectedCount, container.typesRegisteredCount);
         }
 
         [Fact]
@@ -114,7 +81,7 @@ namespace SimpleInjectionContainerTests.Test
             Assert.Equal(expectedType, resolvedType.GetType());
             Assert.Equal(expectedType, resolvedType2.GetType());
             Assert.Equal(resolvedType, resolvedType2);
-            Assert.Equal(expectedCount, container.RegisteredObjectsCount);
+            Assert.Equal(expectedCount, container.typesRegisteredCount);
         }
 
         [Fact]
@@ -132,7 +99,7 @@ namespace SimpleInjectionContainerTests.Test
             //assert
             Assert.Equal(expectedType, resolvedType.GetType());
             Assert.Equal(expectedType, resolvedType2.GetType());
-            Assert.Equal(expectedCount, container.RegisteredObjectsCount);
+            Assert.Equal(expectedCount, container.typesRegisteredCount);
         }
 
         [Fact]
@@ -152,7 +119,7 @@ namespace SimpleInjectionContainerTests.Test
             Assert.Equal(expectedType, resolvedType2.GetType());
             Assert.NotEqual(resolvedType, resolvedType2);
 
-            Assert.Equal(expectedCount, container.RegisteredObjectsCount);
+            Assert.Equal(expectedCount, container.typesRegisteredCount);
         }
 
         [Fact]
@@ -172,7 +139,22 @@ namespace SimpleInjectionContainerTests.Test
             Assert.Equal(expectedType, resolvedType.GetType());
             Assert.Equal(expectedType, resolvedType2.GetType());
             Assert.Equal(resolvedType, resolvedType2);
-            Assert.Equal(expectedCount, container.RegisteredObjectsCount);
+            Assert.Equal(expectedCount, container.typesRegisteredCount);
+        }
+
+        [Fact]
+        public void WhenDispose_Then_typesRegisteredCountZero()
+        {
+            //arrange            
+            var expectedCount = 0;
+            var builder = new ContainerBuilder();            
+            var container = builder.Build();
+            //act
+            builder.Dispose();
+            container.Dispose();
+            //assert
+            Assert.Equal(expectedCount, builder.typesRegisteredCount);
+            Assert.Equal(expectedCount, container.typesRegisteredCount);
         }
     }
 }

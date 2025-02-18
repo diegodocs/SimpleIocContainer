@@ -2,9 +2,9 @@
 {
     public class TypeNotRegisteredException : Exception
     {
-        public TypeNotRegisteredException(string message)
-        : base(message)
-        {
+        public TypeNotRegisteredException(string typeName)        
+            : base($"The type {typeName} has not been registered.")
+        {                        
         }
     }
 }

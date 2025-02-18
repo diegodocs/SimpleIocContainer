@@ -5,7 +5,8 @@ namespace SimpleInjectionContainer
 {
     public class ContainerBuilder : IContainerBuilder
     {
-        protected readonly IList<RegisteredObject> registeredObjects = [];
+        protected readonly IList<TypeRegistered> typesRegistered = [];
+        public int typesRegisteredCount { get { return typesRegistered.Count; } }
 
         public void Dispose()
         {
@@ -14,8 +15,13 @@ namespace SimpleInjectionContainer
         }
 
         protected virtual void Dispose(bool disposing)
-        {            
-            registeredObjects.Clear();
+        {
+            typesRegistered.Clear();
+        }
+
+        public void Register<TImplementationType>()
+        {
+            Register<TImplementationType, TImplementationType>(LifeCycleScope.Transient);
         }
 
         public void Register<TContractType, TImplementationType>()
@@ -25,28 +31,28 @@ namespace SimpleInjectionContainer
 
         public void Register<TContractType, TImplementationType>(LifeCycleScope lifeCycle)
         {
-            var registeredObject = new RegisteredObject(
+            var typeRegistered = new TypeRegistered(
                 contractType: typeof(TContractType),
                 implementationType: typeof(TImplementationType),
                 lifeCycle: lifeCycle);
 
-            registeredObjects.Add(registeredObject);
+            typesRegistered.Add(typeRegistered);
         }
 
         public void RegisterInstance<TContractType>(object instance)
         {
-            var registeredObject = new RegisteredObject(
+            var typeRegistered = new TypeRegistered(
                 contractType: typeof(TContractType),
                 implementationType: typeof(TContractType),
                 instance: instance,
                 lifeCycle: LifeCycleScope.Singleton);
 
-            registeredObjects.Add(registeredObject);
+            typesRegistered.Add(typeRegistered);
         }
 
         public IContainer Build()
         {
-            return new SimpleContainer(registeredObjects);
+            return new SimpleContainer(typesRegistered);
         }
     }
 }

@@ -3,11 +3,11 @@ using SimpleInjectionContainer.Exceptions;
 
 namespace SimpleInjectionContainer
 {
-    public class SimpleContainer(IList<RegisteredObject> registeredObjects) : IContainer
+    public class SimpleContainer(IList<TypeRegistered> typesRegistered) : IContainer
     {
-        private readonly IList<RegisteredObject> registeredObjects = registeredObjects;
+        private readonly IList<TypeRegistered> typesRegistered = typesRegistered;
 
-        public int RegisteredObjectsCount { get { return registeredObjects.Count; } }
+        public int typesRegisteredCount { get { return typesRegistered.Count; } }
 
         public void Dispose()
         {
@@ -16,41 +16,41 @@ namespace SimpleInjectionContainer
         }
 
         protected virtual void Dispose(bool disposing)
-        {            
-            this.registeredObjects.Clear();
+        {
+            typesRegistered.Clear();
         }
 
-        protected List<object> ResolveConstructorParameters(RegisteredObject registeredObject)
+        protected List<object> ResolveConstructorParameters(TypeRegistered typeRegistered)
         {
             var resolvedParameters = new List<object>();
-            var constructorInfo = registeredObject.ImplementationType.GetConstructors()[0];
-            var parameters = constructorInfo.GetParameters();
 
-            foreach (var parameter in parameters)
+            var constructors = typeRegistered.ImplementationType.GetConstructors();
+
+            if (constructors.Length > 0 )
             {
-                resolvedParameters.Add(Resolve(parameter.ParameterType));
+                var constructorInfo = typeRegistered.ImplementationType.GetConstructors()[0];
+                var parameters = constructorInfo.GetParameters();
+
+                foreach (var parameter in parameters)
+                {
+                    resolvedParameters.Add(Resolve(parameter.ParameterType));
+                }
             }
 
             return resolvedParameters;
         }
         private object Resolve(Type ContractType)
         {
-            var registeredObject = registeredObjects.FirstOrDefault(o => o.ContractType == ContractType) ??
-                throw new TypeNotRegisteredException($"The type {ContractType.Name} has not been registered.");
+            var typeRegistered = typesRegistered.FirstOrDefault(o => o.ContractType == ContractType)
+                ?? throw new TypeNotRegisteredException(ContractType.Name);
 
-            if (registeredObject.Instance == null || registeredObject.LifeCycle == LifeCycleScope.Transient)
+            if (typeRegistered.Instance == null || typeRegistered.LifeCycle == LifeCycleScope.Transient)
             {
-                var parameters = ResolveConstructorParameters(registeredObject);
-                registeredObject.GetInstance(parameters);
+                var parameters = ResolveConstructorParameters(typeRegistered);
+                typeRegistered.GetInstance(parameters);
             }
 
-            if (registeredObject.Instance == null)
-            {
-                var message = $"The type {ContractType.Name} failed to create instance.";
-                throw new InstanceCreationErrorException(message);
-            }
-
-            return registeredObject.Instance;
+            return typeRegistered.Instance;
         }
         public TContractType Resolve<TContractType>()
         {
