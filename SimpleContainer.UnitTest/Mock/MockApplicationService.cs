@@ -1,6 +1,5 @@
-﻿namespace SimpleIocContainer.UnitTest.Mock
+﻿namespace SimpleInjectionContainerTests.Mock
 {
-
     public class MockApplicationService : IApplicationService
     {
         protected IFileHandler fileHandler;
@@ -11,9 +10,9 @@
 
         public void SaveUserLogToFile(string login)
         {
-            fileHandler.Save("UserAuth",@"c:\log\userAuth.txt");
+            fileHandler.Save("UserAuth", @"c:\log\userAuth.txt");
             fileHandler.Save("UserOrders", @"c:\log\userOrders.txt");
-            fileHandler.Save("UserPaymentsh", @"c:\log\userPayments.txt");
+            fileHandler.Save("UserPayments", @"c:\log\userPayments.txt");
         }
     }
 }

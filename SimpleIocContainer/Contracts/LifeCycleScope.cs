@@ -1,4 +1,4 @@
-﻿namespace SimpleIoCContainer.Contracts
+﻿namespace SimpleInjectionContainer.Contracts
 {
     public enum LifeCycleScope
     {

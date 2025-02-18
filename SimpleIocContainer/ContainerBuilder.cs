@@ -1,6 +1,7 @@
-﻿using SimpleIoCContainer.Contracts;
+﻿
+using SimpleInjectionContainer.Contracts;
 
-namespace SimpleIocContainer
+namespace SimpleInjectionContainer
 {
     public class ContainerBuilder : IContainerBuilder
     {
@@ -13,8 +14,7 @@ namespace SimpleIocContainer
         }
 
         protected virtual void Dispose(bool disposing)
-        {
-            // Cleanup
+        {            
             registeredObjects.Clear();
         }
 

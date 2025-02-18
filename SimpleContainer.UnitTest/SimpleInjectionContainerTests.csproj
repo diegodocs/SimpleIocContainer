@@ -13,8 +13,8 @@
 	  <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SimpleIoCContainer\SimpleIoCContainer.csproj" />
+  <ItemGroup>    
+    <ProjectReference Include="..\SimpleIocContainer\SimpleInjectionContainer.csproj" />
   </ItemGroup>
 
 </Project>

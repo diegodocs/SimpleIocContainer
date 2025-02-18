@@ -26,12 +26,9 @@ This project covers concepts about:
 ## How to use it
 
 ```Powershell
-var container = new SimpleIocContainer.SimpleContainer();
-
-container.Register<IFileHandler, MockFileHandler>();
-container.Register<IApplicationService, MockApplicationService>();
-
-var mockService = container.Resolve<IApplicationService>();
+var builder = new ContainerBuilder();
+builder.Register<IFileHandler, MockFileHandler>();
+var container = builder.Build();
 var fileHandler = container.Resolve<IFileHandler>();
 ```
 

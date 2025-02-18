@@ -1,4 +1,4 @@
-﻿namespace SimpleIocContainer.UnitTest.Mock
+﻿namespace SimpleInjectionContainerTests.Mock
 {
     public interface IApplicationService
     {

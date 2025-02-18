@@ -1,4 +1,4 @@
-﻿namespace SimpleIoCContainer.Exceptions
+﻿namespace SimpleInjectionContainer.Exceptions
 {
     public class InstanceCreationErrorException : Exception
     {

@@ -1,9 +1,9 @@
-﻿using SimpleIocContainer.UnitTest.Mock;
-using SimpleIoCContainer.Contracts;
-using SimpleIoCContainer.Exceptions;
+﻿using SimpleInjectionContainer.Contracts;
+using SimpleInjectionContainer.Exceptions;
+using SimpleInjectionContainerTests.Mock;
 using Xunit;
 
-namespace SimpleIoCContainer.Tests.Test
+namespace SimpleInjectionContainer.Tests.Test
 {
     public class ContainerTests
     {
@@ -13,10 +13,10 @@ namespace SimpleIoCContainer.Tests.Test
             //arrange
             var expectedCount = 0;
             var expectedMessage = "The type IFileHandler has not been registered.";
-            var builder = new SimpleIocContainer.ContainerBuilder();
+            var builder = new ContainerBuilder();
             var container = builder.Build();
             //act            
-            var ex = Assert.Throws<TypeNotRegisteredException>(()=>container.Resolve<IFileHandler>());
+            var ex = Assert.Throws<TypeNotRegisteredException>(() => container.Resolve<IFileHandler>());
 
             //assert
             Assert.Equal(expectedMessage, ex.Message);
@@ -30,13 +30,13 @@ namespace SimpleIoCContainer.Tests.Test
             var expectedType = typeof(MockFileHandler);
             var expectedCount = 1;
 
-            var builder = new SimpleIocContainer.ContainerBuilder();
+            var builder = new ContainerBuilder();
             builder.Register<IFileHandler, MockFileHandler>();
             var container = builder.Build();
             //act
-            
+
             var resolvedType = container.Resolve<IFileHandler>();
-            
+
             //assert
             Assert.Equal(expectedType, resolvedType.GetType());
             Assert.Equal(expectedCount, container.RegisteredObjectsCount);
@@ -48,11 +48,11 @@ namespace SimpleIoCContainer.Tests.Test
             //arrange
             var expectedCount = 1;
             var expectedMessage = "The type IFileHandler has not been registered.";
-            var builder = new SimpleIocContainer.ContainerBuilder();
+            var builder = new ContainerBuilder();
             builder.Register<IApplicationService, MockApplicationService>();
-            var container = builder.Build();            
+            var container = builder.Build();
             //act
-            
+
             var ex = Assert.Throws<TypeNotRegisteredException>(() => container.Resolve<IApplicationService>());
             //assert
             Assert.Equal(expectedMessage, ex.Message);
@@ -65,7 +65,7 @@ namespace SimpleIoCContainer.Tests.Test
             //arrange
             var expectedType = typeof(MockApplicationService);
             var expectedCount = 2;
-            var builder = new SimpleIocContainer.ContainerBuilder();
+            var builder = new ContainerBuilder();
             builder.Register<IFileHandler, MockFileHandler>();
             builder.Register<IApplicationService, MockApplicationService>();
             var container = builder.Build();
@@ -85,7 +85,7 @@ namespace SimpleIoCContainer.Tests.Test
             //arrange
             var expectedType = typeof(MockFileHandler);
             var expectedCount = 1;
-            var builder = new SimpleIocContainer.ContainerBuilder();
+            var builder = new ContainerBuilder();
             var mockFileHandler = new MockFileHandler();
             builder.RegisterInstance<IFileHandler>(mockFileHandler);
             var container = builder.Build();
@@ -102,7 +102,7 @@ namespace SimpleIoCContainer.Tests.Test
             //arrange
             var expectedType = typeof(MockFileHandler);
             var expectedCount = 1;
-            var builder = new SimpleIocContainer.ContainerBuilder();
+            var builder = new ContainerBuilder();
             var mockFileHandler = new MockFileHandler();
             builder.RegisterInstance<IFileHandler>(mockFileHandler);
             var container = builder.Build();
@@ -122,7 +122,7 @@ namespace SimpleIoCContainer.Tests.Test
             //arrange
             var expectedType = typeof(MockFileHandler);
             var expectedCount = 1;
-            var builder = new SimpleIocContainer.ContainerBuilder();
+            var builder = new ContainerBuilder();
             builder.Register<IFileHandler, MockFileHandler>(LifeCycleScope.Transient);
             var container = builder.Build();
             //act            
@@ -140,7 +140,7 @@ namespace SimpleIoCContainer.Tests.Test
             //arrange
             var expectedType = typeof(MockFileHandler);
             var expectedCount = 1;
-            var builder = new SimpleIocContainer.ContainerBuilder();
+            var builder = new ContainerBuilder();
             builder.Register<IFileHandler, MockFileHandler>(LifeCycleScope.Transient);
             var container = builder.Build();
             //act
@@ -150,7 +150,7 @@ namespace SimpleIoCContainer.Tests.Test
             Assert.Equal(expectedType, resolvedType.GetType());
             Assert.Equal(expectedType, resolvedType2.GetType());
             Assert.NotEqual(resolvedType, resolvedType2);
-            
+
             Assert.Equal(expectedCount, container.RegisteredObjectsCount);
         }
 
@@ -160,11 +160,11 @@ namespace SimpleIoCContainer.Tests.Test
             //arrange
             var expectedType = typeof(MockFileHandler);
             var expectedCount = 1;
-            var builder = new SimpleIocContainer.ContainerBuilder();
+            var builder = new ContainerBuilder();
             builder.Register<IFileHandler, MockFileHandler>(LifeCycleScope.Singleton);
             var container = builder.Build();
             //act
-            
+
             var resolvedType = container.Resolve<IFileHandler>();
             var resolvedType2 = container.Resolve<IFileHandler>();
             //assert
@@ -172,6 +172,6 @@ namespace SimpleIoCContainer.Tests.Test
             Assert.Equal(expectedType, resolvedType2.GetType());
             Assert.Equal(resolvedType, resolvedType2);
             Assert.Equal(expectedCount, container.RegisteredObjectsCount);
-        }       
+        }
     }
 }

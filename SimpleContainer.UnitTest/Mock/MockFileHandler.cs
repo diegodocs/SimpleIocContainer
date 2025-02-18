@@ -1,8 +1,5 @@
-﻿using System;
-
-namespace SimpleIocContainer.UnitTest.Mock
+﻿namespace SimpleInjectionContainerTests.Mock
 {
-
     public class MockFileHandler : IFileHandler
     {
         public void Save(string content, string path)

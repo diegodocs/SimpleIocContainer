@@ -1,4 +1,4 @@
-﻿namespace SimpleIoCContainer.Contracts
+﻿namespace SimpleInjectionContainer.Contracts
 {
 
     public class RegisteredObject(Type contractType, Type implementationType, object? instance = null, LifeCycleScope lifeCycle = LifeCycleScope.Transient)
