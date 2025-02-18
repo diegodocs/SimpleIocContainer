@@ -27,7 +27,7 @@ jobs:
         
     - name: Setup SonarCloud Scanner      
       run: dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
-      working-directory: src
+      working-directory: ./
                
     - name: Build
       run: |          
