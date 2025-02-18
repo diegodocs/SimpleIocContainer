@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35118.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleInjectionContainer", "SimpleIocContainer\SimpleInjectionContainer.csproj", "{A9E00D9E-2C18-C385-7366-7CBAE38BA97B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleInjectionContainer", "SimpleInjectionContainer\SimpleInjectionContainer.csproj", "{A9E00D9E-2C18-C385-7366-7CBAE38BA97B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleInjectionContainerTests", "SimpleContainer.UnitTest\SimpleInjectionContainerTests.csproj", "{41193515-231E-22AA-6EC2-64936E9A0FC5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleInjectionContainerTests", "SimpleInjectionContainerTests\SimpleInjectionContainerTests.csproj", "{41193515-231E-22AA-6EC2-64936E9A0FC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

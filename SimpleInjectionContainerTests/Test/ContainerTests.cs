@@ -1,9 +1,10 @@
-﻿using SimpleInjectionContainer.Contracts;
+﻿using SimpleInjectionContainer;
+using SimpleInjectionContainer.Contracts;
 using SimpleInjectionContainer.Exceptions;
 using SimpleInjectionContainerTests.Mock;
 using Xunit;
 
-namespace SimpleInjectionContainer.Tests.Test
+namespace SimpleInjectionContainerTests.Test
 {
     public class ContainerTests
     {
