@@ -46,9 +46,9 @@ namespace SimpleInjectionContainerTests.Test
             //arrange
             var expectedMessage = "The type Nullable`1 failed to create instance.";
             var expectedType = typeof(int?);
-            var typeRegistered = new TypeRegistered(expectedType, expectedType);
+            var typeRegistered = new RegisteredType(expectedType, expectedType);
             //act            
-            var ex = Assert.Throws<NullInstanceException>(() => typeRegistered.GetInstance([]));
+            var ex = Assert.Throws<NullInstanceException>(() => typeRegistered.CreateInstance([]));
             //assert
             Assert.Equal(expectedMessage, ex.Message);
         }
